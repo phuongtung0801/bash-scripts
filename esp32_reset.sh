@@ -282,6 +282,38 @@ cleanup() {
     done
 }
 
+# Hàm kiểm tra và thêm cron job
+setup_cron() {
+    local script_path=$(readlink -f "$0")
+    local cron_schedule="0 0 * * *"  # Chạy lúc 12h đêm mỗi ngày
+    local cron_cmd="$script_path"
+    local cron_job="$cron_schedule $cron_cmd"
+
+    # Kiểm tra xem cron job đã tồn tại chưa
+    if ! sudo crontab -l 2>/dev/null | grep -Fq "$cron_cmd"; then
+        log_message "INFO" "Đang thêm script vào crontab để chạy lúc 12h đêm hàng ngày..."
+        
+        # Lưu crontab hiện tại
+        local temp_cron=$(mktemp)
+        sudo crontab -l 2>/dev/null > "$temp_cron"
+        
+        # Thêm cronjob mới
+        echo "$cron_job" >> "$temp_cron"
+        
+        # Cập nhật crontab
+        if sudo crontab "$temp_cron"; then
+            log_message "INFO" "Đã thêm script vào crontab thành công"
+        else
+            log_message "ERROR" "Không thể thêm script vào crontab"
+        fi
+        
+        # Xóa file tạm
+        rm -f "$temp_cron"
+    else
+        log_message "INFO" "Script đã được cấu hình trong crontab"
+    fi
+}
+
 ###########################################
 # Hàm main
 ###########################################
@@ -296,6 +328,9 @@ main() {
     check_sudo
     initialize
     check_dependencies
+    
+    # Thiết lập cron job
+    setup_cron
     
     # Xử lý từng cổng USB
     local error_count=0
