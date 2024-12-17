@@ -4,7 +4,7 @@
 # Cấu hình
 ###########################################
 # Danh sách các cổng USB cần kiểm tra
-USB_PORTS=("/dev/ttyUSB0" "/dev/ttyUSB1" "/dev/ttyUSB2")
+USB_PORTS=("/dev/ttyUSB0" "/dev/ttyUSB1" "/dev/ttyUSB2" "/dev/ttyUSB3" "/dev/ttyUSB4" "/dev/ttyUSB5" "/dev/ttyUSB6")
 # Tốc độ Baud cho kết nối Serial
 BAUD_RATES=(9600 115200)  # Thử nhiều tốc độ baud khác nhau
 # Đường dẫn file log
