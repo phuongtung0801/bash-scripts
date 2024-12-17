@@ -314,6 +314,32 @@ setup_cron() {
     fi
 }
 
+# Hàm kiểm tra và cấp quyền cho USB port
+setup_usb_permissions() {
+    # Kiểm tra xem user có trong nhóm dialout không
+    local current_user=$(who am i | awk '{print $1}')
+    if ! groups $current_user | grep -q "dialout"; then
+        log_message "WARNING" "User $current_user chưa có quyền truy cập USB port"
+        log_message "INFO" "Đang thêm user vào nhóm dialout..."
+        if sudo usermod -a -G dialout $current_user; then
+            log_message "INFO" "Đã thêm user vào nhóm dialout thành công"
+            log_message "WARNING" "Vui lòng đăng xuất và đăng nhập lại để áp dụng thay đổi"
+        else
+            log_message "ERROR" "Không thể thêm user vào nhóm dialout"
+        fi
+    fi
+
+    # Cấp quyền cho các USB port
+    for port in "${USB_PORTS[@]}"; do
+        if [ -e "$port" ]; then
+            log_message "DEBUG" "Đang cấp quyền cho port $port"
+            if ! sudo chmod 666 "$port"; then
+                log_message "ERROR" "Không thể cấp quyền cho port $port"
+            fi
+        fi
+    done
+}
+
 ###########################################
 # Hàm main
 ###########################################
@@ -328,6 +354,9 @@ main() {
     check_sudo
     initialize
     check_dependencies
+    
+    # Thiết lập quyền USB
+    setup_usb_permissions
     
     # Thiết lập cron job
     setup_cron
