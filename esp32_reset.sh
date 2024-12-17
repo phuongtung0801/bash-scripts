@@ -1,5 +1,12 @@
 #!/bin/bash
 
+# Kiểm tra xem script có được chạy với sudo không
+if [ "$EUID" -ne 0 ]; then 
+    echo -e "\e[31mError: Script này phải được chạy với quyền sudo\e[0m"
+    echo "Vui lòng chạy: sudo $0"
+    exit 1
+fi
+
 ###########################################
 # Cấu hình
 ###########################################
