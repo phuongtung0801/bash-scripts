@@ -21,7 +21,7 @@ MAX_RETRIES=3
 # Thời gian chờ giữa các lần thử (giây)
 RETRY_DELAY=2
 # Thời gian chờ để screen khởi động (giây)
-SCREEN_WAIT_TIME=2
+SCREEN_WAIT_TIME=4
 # Đường dẫn đến screen binary
 SCREEN_CMD="/usr/bin/screen"
 # Kích thước tối đa của file log (bytes)
